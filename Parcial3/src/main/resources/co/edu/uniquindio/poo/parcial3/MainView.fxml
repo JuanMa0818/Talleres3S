@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" style="-fx-background-color: linear-gradient(#0b69c1,#08023b);"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="co.edu.uniquindio.poo.parcial3.Controller.MainController">
+   <top>
+      <BorderPane prefHeight="48.0" prefWidth="600.0" style="-fx-background-color: ffffff;" BorderPane.alignment="CENTER">
+         <center>
+            <Label text="NextCare Medical Hub" BorderPane.alignment="CENTER">
+               <font>
+                  <Font name="Yu Gothic UI Semibold" size="23.0" />
+               </font>
+            </Label>
+         </center>
+      </BorderPane>
+   </top>
+   <center>
+      <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="274.0" prefWidth="538.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets right="50.0" />
+         </padding>
+         <children>
+            <Button mnemonicParsing="false" onAction="#abrirLoginPaciente" text="PACIENTES">
+               <font>
+                  <Font name="Yu Gothic UI Semibold" size="15.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="-80.0" left="40.0" />
+               </VBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#abrirLoginMedico" text="MEDICOS">
+               <font>
+                  <Font name="Yu Gothic UI Semibold" size="15.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="-80.0" left="40.0" top="100.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

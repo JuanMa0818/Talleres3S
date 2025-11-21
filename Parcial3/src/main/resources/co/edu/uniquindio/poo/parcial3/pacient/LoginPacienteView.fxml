@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="co.edu.uniquindio.poo.parcial3.Controller.LoginController"
+            prefWidth="400" prefHeight="300">
+
+    <children>
+        <VBox alignment="CENTER" spacing="15"
+              layoutX="50" layoutY="50"
+              AnchorPane.leftAnchor="50"
+              AnchorPane.rightAnchor="50"
+              AnchorPane.topAnchor="50"
+              AnchorPane.bottomAnchor="50">
+
+            <Label text="Login Paciente"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+            <TextField fx:id="txtEmail"
+                       promptText="Correo electrónico"
+                       prefWidth="300"/>
+
+            <PasswordField fx:id="txtPassword"
+                           promptText="Contraseña"
+                           prefWidth="300"/>
+
+            <Button text="Ingresar"
+                    onAction="#iniciarSesion"
+                    prefWidth="150"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14;"/>
+
+        </VBox>
+    </children>
+</AnchorPane>

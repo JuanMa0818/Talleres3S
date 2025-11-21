@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane
+        prefHeight="600.0" prefWidth="800.0"
+        xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="co.edu.uniquindio.poo.parcial3.Controller.PacienteController">
+<top>
+        <HBox style="-fx-background-color: #2c3e50; -fx-padding: 15;" spacing="20" alignment="CENTER_LEFT">
+            <Label text="Sistema de Citas Médicas - Paciente"
+                   style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;" />
+            <Label fx:id="lblUsuario" text="Bienvenido, [Nombre]"
+                   style="-fx-text-fill: white; -fx-font-size: 14;" />
+        </HBox>
+    </top>
+
+    <!-- Left: Menú de navegación para paciente -->
+    <left>
+        <VBox style="-fx-background-color: #34495e; -fx-padding: 20;" spacing="15" prefWidth="200">
+            <Button text="Mi Perfil"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14; -fx-pref-width: 160;"
+                    onAction="#cargarMiPerfil" />
+
+            <Button text="Solicitar Cita"
+                    style="-fx-background-color: #34495e; -fx-text-fill: white; -fx-font-size: 14; -fx-pref-width: 160;"
+                    onAction="#cargarSolicitarCita" />
+
+            <Button text="Mis Citas"
+                    style="-fx-background-color: #34495e; -fx-text-fill: white; -fx-font-size: 14; -fx-pref-width: 160;"
+                    onAction="#cargarMisCitas" />
+
+            <Button text="Cerrar Sesión"
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14; -fx-pref-width: 160;"
+                    onAction="#cerrarSesion" />
+        </VBox>
+    </left>
+
+
+    <center>
+        <AnchorPane fx:id="contenidoPrincipal" />
+    </center>
+
+</BorderPane>
