@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="700" prefWidth="1000"
+            style="-fx-background-color: #f0f8ff;"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="co.edu.uniquindio.poo.parcial3.Controller.MedicoController">
+
+    <top>
+        <VBox spacing="10" style="-fx-background-color: #2c3e50;">
+            <HBox alignment="CENTER" spacing="20" style="-fx-padding: 15;">
+                <ImageView fitHeight="40" fitWidth="40" />
+
+                <Text fill="white" style="-fx-font-size: 24; -fx-font-weight: bold;"
+                      text="NextCare Medical Hub" />
+
+                <HBox alignment="CENTER_RIGHT" spacing="15" HBox.hgrow="ALWAYS">
+                    <Label fx:id="lblNombreDoctor"
+                           style="-fx-text-fill: white; -fx-font-size: 14;"
+                           text="Cargando..." />
+
+                    <Button fx:id="btnCerrarSesion"
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white;"
+                            text="Cerrar Sesión" />
+                </HBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TabPane style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE">
+
+            <!-- CONSULTA MÉDICA -->
+            <Tab text="Consulta Médica">
+                <SplitPane dividerPositions="0.3" orientation="HORIZONTAL">
+
+                    <!-- DATOS DEL PACIENTE -->
+                    <VBox spacing="15" style="-fx-padding: 15; -fx-background-color: #ecf0f1;">
+                        <Text style="-fx-font-size: 16; -fx-font-weight: bold;"
+                              text="Datos del Paciente" />
+
+                        <VBox spacing="8">
+                            <Label fx:id="lblNombrePaciente" text="Nombre: --" />
+                            <Label fx:id="lblEdadPaciente" text="Edad: --" />
+                            <Label fx:id="lblSexoPaciente" text="Sexo: --" />
+                            <Label fx:id="lblAlergiasPaciente" text="Alergias: --" />
+                            <Label fx:id="lblEnfermedadesPaciente" text="Enfermedades Crónicas: --" />
+                        </VBox>
+                    </VBox>
+
+                    <!-- CONSULTA -->
+                    <VBox spacing="15" style="-fx-padding: 15;">
+                        <Text style="-fx-font-size: 16; -fx-font-weight: bold;"
+                              text="Consulta Actual" />
+
+                        <TitledPane text="Síntomas">
+                            <TextArea fx:id="txtSintomas" prefRowCount="3"
+                                      promptText="Describir síntomas..." />
+                        </TitledPane>
+
+                        <TitledPane text="Diagnóstico">
+                            <TextArea fx:id="txtDiagnostico" prefRowCount="2"
+                                      promptText="Diagnóstico..." />
+                        </TitledPane>
+
+                        <TitledPane text="Tratamiento">
+                            <TextArea fx:id="txtTratamiento" prefRowCount="4"
+                                      promptText="Prescripción médica..." />
+                        </TitledPane>
+
+                        <HBox alignment="CENTER_RIGHT" spacing="10">
+                            <Button fx:id="btnGuardarConsulta"
+                                    style="-fx-background-color: #27ae60; -fx-text-fill: white;"
+                                    text="Guardar Consulta" />
+                        </HBox>
+                    </VBox>
+
+                </SplitPane>
+            </Tab>
+
+            <!-- AGENDA -->
+            <Tab text="Agenda de Citas">
+                <VBox spacing="15" style="-fx-padding: 20;">
+
+                    <TableView fx:id="tablaCitas" prefHeight="490" prefWidth="960">
+                        <columns>
+                            <TableColumn fx:id="colHora" prefWidth="80" text="Hora" />
+                            <TableColumn fx:id="colPaciente" prefWidth="226" text="Paciente" />
+                            <TableColumn fx:id="colMotivo" prefWidth="328" text="Motivo" />
+                            <TableColumn fx:id="colEstado" prefWidth="324" text="Estado" />
+                        </columns>
+                    </TableView>
+
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-background-color: #34495e; -fx-padding: 10;">
+            <Label style="-fx-text-fill: #bdc3c7;"
+                   text="Sistema Médico v1.0 - © 2024 Hospital Central" />
+        </HBox>
+    </bottom>
+
+</BorderPane>

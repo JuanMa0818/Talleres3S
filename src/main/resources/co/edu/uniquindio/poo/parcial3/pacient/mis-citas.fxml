@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="512.0" prefWidth="1002.0" spacing="20" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.poo.parcial3.Controller.citasPacientController">
+
+    <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Mis Citas" />
+
+    <Separator />
+
+    <!-- Filtros y estadísticas -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+
+        <VBox spacing="5" />
+    </HBox>
+
+    <!-- Tabla de citas -->
+    <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Citas Programadas" />
+
+    <TableView fx:id="tablaCitas" prefWidth="962.0" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn prefWidth="100" text="Fecha">
+                <cellValueFactory>
+                    <PropertyValueFactory property="fecha" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <TableColumn text="Hora">
+                <cellValueFactory>
+                    <PropertyValueFactory property="hora" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <TableColumn prefWidth="150" text="Médico">
+                <cellValueFactory>
+                    <PropertyValueFactory property="medicoNombre" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <TableColumn prefWidth="120" text="Especialidad">
+                <cellValueFactory>
+                    <PropertyValueFactory property="especialidad" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <TableColumn prefWidth="180" text="Motivo">
+                <cellValueFactory>
+                    <PropertyValueFactory property="motivo" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <TableColumn prefWidth="100" text="Estado">
+                <cellValueFactory>
+                    <PropertyValueFactory property="estado" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <TableColumn text="Costo">
+                <cellValueFactory>
+                    <PropertyValueFactory property="precio" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <TableColumn prefWidth="150" text="Acciones">
+                <cellValueFactory>
+                    <PropertyValueFactory property="dummy" />
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+    <!-- Botones de acción -->
+    <HBox alignment="CENTER" spacing="15">
+        <Button onAction="#solicitarNuevaCita" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;" text="Solicitar Nueva Cita" />
+        <Button onAction="#actualizarCitas" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;" text="Actualizar Lista" />
+    </HBox>
+
+</VBox>
