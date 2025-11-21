@@ -11,9 +11,13 @@ public class Paciente extends Persona {
                 builder.apellido,
                 builder.identificacion,
                 builder.telefono,
-                builder.email
+                builder.email,
+                builder.contraseña
+
         );
         this.alergias = builder.alergias;
+        this.contraseña = builder.contraseña;
+
     }
 
     public String getAlergias() {
@@ -45,6 +49,7 @@ public class Paciente extends Persona {
         }
 
 
+
         public Builder setApellido(String apellido) {
             this.apellido = apellido;
             return this;
@@ -74,4 +79,5 @@ public class Paciente extends Persona {
             return new Paciente(this);
         }
     }
+
 }

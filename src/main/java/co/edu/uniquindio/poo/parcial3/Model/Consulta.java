@@ -47,9 +47,9 @@ public class Consulta {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         StringBuilder resumen = new StringBuilder();
-        resumen.append("═══════════════════════════════════════\n");
-        resumen.append("       RESUMEN DE CONSULTA MÉDICA\n");
-        resumen.append("═══════════════════════════════════════\n\n");
+
+        
+
 
         resumen.append("ID Consulta: ").append(idConsulta).append("\n");
         resumen.append("Fecha: ").append(fechaHora.format(formatter)).append("\n\n");

@@ -9,4 +9,9 @@ public interface Cita {
     void generarResumen();
 
     double getCostoConsulta();
+
+    Paciente getPaciente();
+    Medico getMedico();
+    public void setPaciente(Paciente paciente);
+    public void setMedico(Medico medico);
 }

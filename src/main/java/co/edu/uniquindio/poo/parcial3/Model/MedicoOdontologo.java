@@ -6,9 +6,9 @@ public class MedicoOdontologo extends Persona implements Medico {
     private String especialidad;
 
     public MedicoOdontologo(String nombre, String apellido, String identificacion, String telefono,
-                            String email, String codigoOdontologo) {
+                            String email, String codigoOdontologo, String contraseña) {
 
-        super(nombre, apellido, identificacion, telefono, email);
+        super(nombre, apellido, identificacion, telefono, email, contraseña);
         this.codigo = codigoOdontologo;
         this.especialidad = "Odontología";
     }

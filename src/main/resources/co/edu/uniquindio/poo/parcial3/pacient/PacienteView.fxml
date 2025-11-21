@@ -38,7 +38,7 @@
         </VBox>
     </left>
 
-    <!-- Center: Contenedor dinámico -->
+
     <center>
         <AnchorPane fx:id="contenidoPrincipal" />
     </center>

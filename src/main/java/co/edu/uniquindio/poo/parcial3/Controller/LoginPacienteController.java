@@ -23,7 +23,7 @@ public class LoginPacienteController {
     private Clinica clinica;
 
     public void initialize() {
-        // Obtener la instancia de la clínica
+        // Obtienes SIEMPRE la misma instancia de la clínica
         clinica = Clinica.getInstancia("Hospital Central", "900123456");
     }
 
@@ -32,7 +32,11 @@ public class LoginPacienteController {
         String email = txtEmail.getText().trim();
         String password = txtPassword.getText().trim();
 
-        // Buscar paciente con email y contraseña correctos
+        if(email.isEmpty() || password.isEmpty()){
+            mostrarAlerta("Campos vacíos", "Ingresa email y contraseña");
+            return;
+        }
+
         Paciente paciente = clinica.getPacientes().stream()
                 .filter(p -> p.getEmail().equalsIgnoreCase(email)
                         && p.getContraseña().equals(password))
@@ -48,27 +52,50 @@ public class LoginPacienteController {
 
     private void abrirVistaPaciente(Paciente paciente) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/poo/parcial3/paciente.view/PacienteView.fxml"));
-            Parent root = loader.load();
 
-            // Pasar datos del paciente al controller
-            co.edu.uniquindio.poo.parcial3.Controller.PacienteController controller =
-                    loader.getController();
+            // Lista de rutas posibles
+            String[] rutas = {
+                    "/co/edu/uniquindio/poo/parcial3/paciente/PacienteView.fxml",
+                    "/co/edu/uniquindio/poo/parcial3/pacient/PacienteView.fxml",
+                    "/co/edu/uniquindio/poo/parcial3/View/PacienteView.fxml",
+                    "PaciezznteView.fxml"
+            };
+
+            FXMLLoader loader = null;
+            Parent root = null;
+
+            for(String ruta : rutas){
+                try{
+                    loader = new FXMLLoader(getClass().getResource(ruta));
+                    root = loader.load();
+                    System.out.println("FXML encontrado en: " + ruta);
+                    break;
+                } catch (Exception ignored){
+                    System.out.println("No se encontró en: " + ruta);
+                }
+            }
+
+            if(root == null){
+                mostrarAlerta("Error", "No se pudo cargar la interfaz del paciente");
+                return;
+            }
+
+            PacienteController controller = loader.getController();
             controller.setPacienteActual(paciente);
 
-            Scene scene = new Scene(root);
             Stage stage = new Stage();
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.setTitle("Panel Paciente - " + paciente.getNombre());
             stage.setResizable(false);
             stage.show();
 
-            // Cerrar ventana de login
+            // Cerrar login
             Stage loginStage = (Stage) txtEmail.getScene().getWindow();
             loginStage.close();
 
-        } catch (Exception e) {
+        } catch (Exception e){
             e.printStackTrace();
+            mostrarAlerta("Error", "Error al abrir la vista: " + e.getMessage());
         }
     }
 

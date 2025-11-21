@@ -6,18 +6,21 @@ public abstract class Persona {
     protected String identificacion;
     protected String telefono;
     protected String email;
+    protected String contraseña;
 
-    public Persona(String nombre, String apellido, String identificacion, String telefono, String email) {
+    public Persona(String nombre, String apellido, String identificacion, String telefono, String email, String contraseña) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.identificacion = identificacion;
         this.telefono = telefono;
         this.email = email;
+        this.contraseña= contraseña;
     }
 
     public String getNombre() {
         return nombre;
     }
+    public void setContraseña(String contraseña){this.contraseña= contraseña;}
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -49,6 +52,9 @@ public abstract class Persona {
 
     public String getEmail() {
         return email;
+    }
+    public String getContraseña(){
+        return contraseña;
     }
 
     public void setEmail(String email) {

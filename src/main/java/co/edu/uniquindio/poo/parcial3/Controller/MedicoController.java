@@ -102,13 +102,17 @@ public class MedicoController implements Initializable {
 
     private void cargarCitasDelMedico() {
         listaCitas.clear();
-        List<Cita> todasLasCitas = clinica.getTodasLasCitas();
-        List<Paciente> pacientes = clinica.getPacientes();
 
-        // Crear wrappers para las citas con información adicional
-        for (int i = 0; i < todasLasCitas.size() && i < pacientes.size(); i++) {
-            Cita cita = todasLasCitas.get(i);
-            Paciente paciente = pacientes.get(i);
+        List<Cita> todasLasCitas = clinica.getTodasLasCitas();
+
+        for (Cita cita : todasLasCitas) {
+
+            // Solo cargar las que pertenecen al médico actual
+            if (!cita.getMedico().equals(medicoActual)) {
+                continue;
+            }
+
+            Paciente paciente = cita.getPaciente(); // AQUÍ ESTÁ LA SOLUCIÓN
 
             CitaWrapper wrapper = new CitaWrapper(
                     cita,
@@ -220,6 +224,10 @@ public class MedicoController implements Initializable {
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
+    }
+
+    public void setMedicoActual(Medico medico) {
+        this.medicoActual = medico;
     }
 
     public static class CitaWrapper {

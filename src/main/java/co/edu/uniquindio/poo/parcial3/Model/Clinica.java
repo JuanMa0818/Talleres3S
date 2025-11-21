@@ -28,6 +28,11 @@ public class Clinica {
     }
 
     private void inicializarDatos() {
+        medicos.add(FactoryMedico.crearMedico("general", "Dr. Carlos López", "López", "3137197492", "carlos@gmail.com", "111", "456","789"));
+        medicos.add(FactoryMedico.crearMedico("general", "Dra. Ana García", "García", "1234567890", "ana@gmail.com", "1092853072", "789","897"));
+        medicos.add(FactoryMedico.crearMedico("odontologo", "Dr. Pedro Martínez", "Martínez", "0987654321", "pedro@gmail.com", "222", "123","123"));
+        medicos.add(FactoryMedico.crearMedico("odontologo", "Dra. Laura Rodríguez", "Rodríguez", "3005624368", "laura@gmail.com", "333", "213","521"));
+
         // Pacientes existentes
         pacientes.add(new Paciente.Builder()
                 .setNombre("Juan")
@@ -61,7 +66,6 @@ public class Clinica {
                 .build());
     }
 
-
     public List<Medico> getMedicosPorEspecialidad(String especialidad) {
         List<Medico> resultado = new ArrayList<>();
         for (Medico medico : medicos) {
@@ -73,30 +77,72 @@ public class Clinica {
     }
 
     public boolean solicitarCita(Paciente paciente, Medico medico, String fecha, String hora, String motivo) {
-        Cita cita;
-        String tipoCita;
+        try {
+            String tipoCita;
+
+            if (medico instanceof MedicoOdontologo) {
+                tipoCita = "odontologica";
+            } else if (medico instanceof MedicoGeneral) {
+                tipoCita = "general";
+            } else {
+                tipoCita = "general";
+            }
+
+            double precio = medico.getPrecio();
+            Cita cita = FactoryCita.crearCita(tipoCita, fecha, hora, precio);
+
+            // DEBUG: Verificar antes de asignar
+            System.out.println(" Asignando médico y paciente a la cita...");
+            System.out.println("   Médico: " + medico.getNombre() );
+            System.out.println("   Paciente: " + paciente.getNombre());
+            System.out.println("   Tipo cita: " + tipoCita);
 
 
-        if (medico instanceof MedicoOdontologo) {
-            tipoCita = "odontologica";
+            if (cita instanceof CitaGeneral) {
+                CitaGeneral citaGeneral = (CitaGeneral) cita;
+                citaGeneral.setMedico(medico);
+                citaGeneral.setPaciente(paciente);
+                System.out.println("   Asignado a CitaGeneral - Médico: " + citaGeneral.getMedico());
+            } else if (cita instanceof CitaOdontologica) {
+                CitaOdontologica citaOdonto = (CitaOdontologica) cita;
+                citaOdonto.setMedico(medico);
+                citaOdonto.setPaciente(paciente);
+                System.out.println("Asignado a CitaOdontologica - Médico: " + citaOdonto.getMedico());
+            }
 
-        } else if (medico instanceof MedicoGeneral) {
-            tipoCita = "general";
+            boolean resultado = citas.add(cita);
 
-        } else {
-            tipoCita = "general";
+            if (resultado) {
+                System.out.println("CITA CREADA EXITOSAMENTE:");
+                System.out.println("   Fecha: " + fecha);
+                System.out.println("   Hora: " + hora);
+                System.out.println("   Médico: " + (cita.getMedico() != null ? cita.getMedico().getNombre() : "NULL"));
+                System.out.println("   Paciente: " + (cita.getPaciente() != null ? cita.getPaciente().getNombre() : "NULL"));
+                System.out.println("   Precio: $" + precio);
+            }
+
+            return resultado;
+
+        } catch (Exception e) {
+            System.err.println("Error al crear cita: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-
-
-        double precio = medico.getPrecio(); // Usar el precio del médico
-        cita = FactoryCita.crearCita(tipoCita, fecha, hora, precio);
-
-        return citas.add(cita);
     }
 
     public List<Cita> getCitasPorPaciente(String identificacionPaciente) {
+        List<Cita> citasPaciente = new ArrayList<>();
 
-        return new ArrayList<>(citas);
+        for (Cita cita : citas) {
+            // Verificar si la cita tiene un paciente asignado y coincide con la identificación
+            if (cita.getPaciente() != null &&
+                    cita.getPaciente().getIdentificacion().equals(identificacionPaciente)) {
+                citasPaciente.add(cita);
+            }
+        }
+
+        System.out.println("Citas encontradas para paciente " + identificacionPaciente + ": " + citasPaciente.size());
+        return citasPaciente;
     }
 
     public Paciente buscarPacientePorIdentificacion(String identificacion) {
@@ -147,11 +193,9 @@ public class Clinica {
         return fechas;
     }
 
-
     public void agregarCita(Cita cita) {
         citas.add(cita);
     }
-
 
     public List<Cita> getTodasLasCitas() {
         return new ArrayList<>(citas);

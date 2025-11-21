@@ -5,8 +5,8 @@ public interface Medico {
     String getIdentificacion();
     String getEspecialidad();
     double getPrecio();
-    public abstract void atenderPaciente();
-
-
-
+    String getEmail();
+    String getTelefono();
+    String getContraseña();
+    void atenderPaciente();
 }

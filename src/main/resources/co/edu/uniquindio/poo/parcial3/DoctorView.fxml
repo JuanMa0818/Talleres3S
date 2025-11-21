@@ -46,10 +46,6 @@
 
                         <VBox spacing="8">
                             <Label fx:id="lblNombrePaciente" text="Nombre: --" />
-                            <Label fx:id="lblEdadPaciente" text="Edad: --" />
-                            <Label fx:id="lblSexoPaciente" text="Sexo: --" />
-                            <Label fx:id="lblAlergiasPaciente" text="Alergias: --" />
-                            <Label fx:id="lblEnfermedadesPaciente" text="Enfermedades Crónicas: --" />
                         </VBox>
                     </VBox>
 

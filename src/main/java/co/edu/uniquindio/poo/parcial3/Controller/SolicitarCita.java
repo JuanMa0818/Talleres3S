@@ -1,411 +1,292 @@
 package co.edu.uniquindio.poo.parcial3.Controller;
 
 import co.edu.uniquindio.poo.parcial3.Model.*;
-import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import java.net.URL;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class SolicitarCita {
-    public Label lblNombrePaciente;
-    public Label lblSeguroPaciente;
-    public Label lblTipoSangre;
-    public ComboBox<String> cmbMedico;
-    public ComboBox<String> cmbEspecialidad;
-    public ComboBox<String> cmbHora;
-    public TextArea taMotivo;
-    public Label lblMedicoSeleccionado;
-    public Label lblEspecialidadSeleccionada;
-    public Label lblCostoConsulta;
-    public DatePicker dpFecha;
+public class SolicitarCita implements Initializable {
 
-    private Clinica clinica;
+    @FXML public Label lblNombrePaciente;
+    @FXML public Label lblSeguroPaciente;
+    @FXML public Label lblTipoSangre;
+    @FXML public ComboBox<Medico> cmbMedico;
+    @FXML public ComboBox<String> cmbEspecialidad;
+    @FXML public ComboBox<String> cmbHora;
+    @FXML public TextArea taMotivo;
+    @FXML public Label lblMedicoSeleccionado;
+    @FXML public Label lblEspecialidadSeleccionada;
+    @FXML public Label lblCostoConsulta;
+    @FXML public DatePicker dpFecha;
+
     private Paciente pacienteActual;
-    private Medico medicoSeleccionado;
+    private Clinica clinica;
+    private ObservableList<Medico> listaMedicos;
+    private ObservableList<String> listaEspecialidades;
+    private ObservableList<String> listaHoras;
 
-    // Método de inicialización
-    public void initialize() {
-        try {
-            clinica = Clinica.getInstancia("Clínica UNIQUINDIO", "123456789");
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        System.out.println(" SolicitarCitaController INICIALIZADO");
 
-            // Configurar combobox de especialidades con datos REALES de la clínica
-            cargarEspecialidades();
+        clinica = Clinica.getInstancia("Hospital Central", "900123456");
+        configurarComponentes();
+        cargarDatosIniciales();
+    }
 
-            // Configurar combobox de horas con datos REALES de la clínica
-            cargarHorasDisponibles();
+    public void setPacienteActual(Paciente paciente) {
+        System.out.println("setPacienteActual llamado con: " + (paciente != null ? paciente.getNombre() : "null"));
+        this.pacienteActual = paciente;
+        actualizarInformacionPaciente();
+    }
 
-            // Configurar DatePicker
-            configurarDatePicker();
-
-            // Cargar paciente actual
-            cargarPacienteActual();
-
-            // Configurar listeners
-            configurarListeners();
-
-            System.out.println("Controlador inicializado. Médicos en clínica: " + clinica.getMedicos().size());
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al inicializar: " + e.getMessage());
-            e.printStackTrace();
+    private void actualizarInformacionPaciente() {
+        if (pacienteActual != null) {
+            lblNombrePaciente.setText(pacienteActual.getNombre() + " " + pacienteActual.getApellido());
+            lblSeguroPaciente.setText("ID: " + pacienteActual.getIdentificacion());
+            lblTipoSangre.setText("Tel: " + pacienteActual.getTelefono() + " | Email: " + pacienteActual.getEmail());
+        } else {
+            lblNombrePaciente.setText("[Nombre]");
+            lblSeguroPaciente.setText("[ID]");
+            lblTipoSangre.setText("[Email/Teléfono]");
         }
     }
 
-    private void cargarEspecialidades() {
-        try {
-            // Obtener especialidades REALES de la clínica
-            List<String> especialidades = clinica.getEspecialidades();
-            ObservableList<String> especialidadesList = FXCollections.observableArrayList(especialidades);
-            cmbEspecialidad.setItems(especialidadesList);
-
-            System.out.println("Especialidades cargadas: " + especialidades);
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar especialidades: " + e.getMessage());
-            // Fallback a datos de ejemplo
-            cmbEspecialidad.setItems(FXCollections.observableArrayList("General", "Odontología"));
-        }
-    }
-
-    private void cargarHorasDisponibles() {
-        try {
-            // Obtener horas REALES de la clínica
-            List<String> horas = clinica.getHorasDisponibles();
-            ObservableList<String> horasList = FXCollections.observableArrayList(horas);
-            cmbHora.setItems(horasList);
-
-            System.out.println("Horas cargadas: " + horas);
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar horas: " + e.getMessage());
-            // Fallback a datos de ejemplo
-            cmbHora.setItems(FXCollections.observableArrayList(
-                    "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
-                    "02:00 PM", "03:00 PM", "04:00 PM"
-            ));
-        }
-    }
-
-    private void configurarDatePicker() {
-        // Configurar para que solo permita fechas futuras
-        dpFecha.setDayCellFactory(picker -> new javafx.scene.control.DateCell() {
+    private void configurarComponentes() {
+        // Configurar DatePicker
+        dpFecha.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
                 setDisable(empty || date.isBefore(LocalDate.now()));
             }
         });
-        dpFecha.setValue(LocalDate.now());
-    }
 
-    private void cargarPacienteActual() {
-        try {
-            // Buscar paciente REAL en la clínica
-            pacienteActual = clinica.buscarPacientePorIdentificacion("1001");
 
-            if (pacienteActual != null) {
-                actualizarDatosPaciente();
-                System.out.println("Paciente cargado: " + pacienteActual.getNombre());
-            } else {
-                // Si no encuentra, usar el primer paciente disponible
-                if (!clinica.getPacientes().isEmpty()) {
-                    pacienteActual = clinica.getPacientes().get(0);
-                    actualizarDatosPaciente();
-                    System.out.println("Paciente cargado (fallback): " + pacienteActual.getNombre());
-                } else {
-                    mostrarAlerta("Advertencia", "No se encontraron pacientes en el sistema");
-                }
-            }
+        listaEspecialidades = FXCollections.observableArrayList();
+        cmbEspecialidad.setItems(listaEspecialidades);
 
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar paciente: " + e.getMessage());
-        }
+        listaMedicos = FXCollections.observableArrayList();
+        cmbMedico.setItems(listaMedicos);
+
+        listaHoras = FXCollections.observableArrayList();
+        cmbHora.setItems(listaHoras);
+
+        configurarListeners();
     }
 
     private void configurarListeners() {
-        // Listener para la selección de médico
-        cmbMedico.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        cmbEspecialidad.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                actualizarMedicoSeleccionado(newValue);
+                cargarMedicosPorEspecialidad(new ActionEvent());
+                actualizarInformacionEspecialidad();
+            }
+        });
+
+        cmbMedico.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                actualizarInformacionMedico();
+                cargarHorasDisponibles();
+            }
+        });
+
+        dpFecha.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                cargarHorasDisponibles();
             }
         });
     }
 
+    private void cargarDatosIniciales() {
+        cargarEspecialidades();
+        cargarHorasDisponibles();
+    }
+
+    @FXML
     public void cargarMedicosPorEspecialidad(ActionEvent actionEvent) {
         try {
-            String especialidad = cmbEspecialidad.getValue();
-            if (especialidad != null && !especialidad.isEmpty()) {
+            String especialidadSeleccionada = cmbEspecialidad.getValue();
+            if (especialidadSeleccionada != null) {
+                listaMedicos.clear();
 
-                // Convertir nombre de especialidad a formato interno
-                String especialidadInterna = convertirEspecialidad(especialidad);
+                List<Medico> medicos = clinica.getMedicosPorEspecialidad(especialidadSeleccionada);
+                listaMedicos.addAll(medicos);
 
-                // Obtener médicos REALES por especialidad
-                List<Medico> medicos = clinica.getMedicosPorEspecialidad(especialidadInterna);
-
-                ObservableList<String> nombresMedicos = FXCollections.observableArrayList();
-
-                for (Medico medico : medicos) {
-                    String infoMedico = String.format("%s - %s - Tel: %s",
-                            medico.getNombre(),
-                            medico.getEspecialidad());
-                    nombresMedicos.add(infoMedico);
-                }
-
-                cmbMedico.setItems(nombresMedicos);
-                cmbMedico.getSelectionModel().clearSelection();
-
-                lblEspecialidadSeleccionada.setText("Especialidad: " + especialidad);
-                lblCostoConsulta.setText("$0");
-                medicoSeleccionado = null;
-                lblMedicoSeleccionado.setText("Médico: No seleccionado");
-
-                System.out.println("Médicos cargados para " + especialidad + ": " + medicos.size());
-
-                if (medicos.isEmpty()) {
-                    mostrarAlerta("Información", "No hay médicos disponibles para la especialidad: " + especialidad);
+                if (!listaMedicos.isEmpty()) {
+                    cmbMedico.setValue(listaMedicos.get(0));
+                } else {
+                    lblMedicoSeleccionado.setText("No hay médicos disponibles");
+                    lblCostoConsulta.setText("$0");
                 }
             }
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar médicos: " + e.getMessage());
-            e.printStackTrace();
+            mostrarAlerta("Error", "Error al cargar médicos", e.getMessage());
         }
     }
 
+    private void cargarEspecialidades() {
+        try {
+            listaEspecialidades.clear();
+
+
+            listaEspecialidades.add("Medicina General");
+            listaEspecialidades.add("Odontología");
+
+            if (!listaEspecialidades.isEmpty()) {
+                cmbEspecialidad.setValue(listaEspecialidades.get(0));
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al cargar especialidades", e.getMessage());
+        }
+    }
+
+    private void cargarHorasDisponibles() {
+        try {
+            listaHoras.clear();
+
+            if (dpFecha.getValue() != null && cmbMedico.getValue() != null) {
+
+                listaHoras.addAll(
+                        "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM",
+                        "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"
+                );
+            } else {
+                listaHoras.add("Seleccione fecha y médico");
+            }
+
+            if (!listaHoras.isEmpty()) {
+                cmbHora.setValue(listaHoras.get(0));
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al cargar horas", e.getMessage());
+        }
+    }
+
+    private void actualizarInformacionEspecialidad() {
+        String especialidad = cmbEspecialidad.getValue();
+        if (especialidad != null) {
+            lblEspecialidadSeleccionada.setText(especialidad);
+        }
+    }
+
+    private void actualizarInformacionMedico() {
+        Medico medicoSeleccionado = cmbMedico.getValue();
+        if (medicoSeleccionado != null) {
+            lblMedicoSeleccionado.setText(medicoSeleccionado.getNombre());
+            lblCostoConsulta.setText("$" + medicoSeleccionado.getPrecio());
+        }
+    }
+
+    @FXML
     public void solicitarCita(ActionEvent actionEvent) {
         try {
-            // Validaciones
             if (!validarFormulario()) {
                 return;
             }
 
-            // Obtener datos del formulario
-            String fecha = dpFecha.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            Medico medicoSeleccionado = cmbMedico.getValue();
+            String fecha = dpFecha.getValue().toString();
             String hora = cmbHora.getValue();
-            String motivo = taMotivo.getText().trim();
+            String motivo = taMotivo.getText();
 
-            // Solicitar cita REAL en el sistema
-            boolean exito = clinica.solicitarCita(pacienteActual, medicoSeleccionado, fecha, hora, motivo);
+            boolean citaSolicitada = clinica.solicitarCita(pacienteActual, medicoSeleccionado, fecha, hora, motivo);
 
-            if (exito) {
-                // Obtener la última cita agregada
-                List<Cita> citas = clinica.getCitas();
-                if (!citas.isEmpty()) {
-                    Cita citaCreada = citas.get(citas.size() - 1);
+            if (citaSolicitada) {
+                mostrarAlerta("Éxito", "Cita Solicitada",
+                        "Su cita ha sido solicitada exitosamente.\n\n" +
+                                "Paciente: " + pacienteActual.getNombre() + "\n" +
+                                "Médico: " + medicoSeleccionado.getNombre() + "\n" +
+                                "Fecha: " + fecha + "\n" +
+                                "Hora: " + hora + "\n" +
+                                "Costo: $" + medicoSeleccionado.getPrecio());
 
-                    // Mostrar resumen de la cita
-                    mostrarResumenCita(citaCreada, fecha, hora);
-
-                    // Generar resumen en consola
-                    citaCreada.generarResumen();
-                }
-
-                // Limpiar formulario
-                limpiarFormulario(null);
-
+                limpiarFormularioSilencioso();
             } else {
-                mostrarAlerta("Error", "No se pudo agendar la cita. Intente nuevamente.");
+                mostrarAlerta("Error", "Error al solicitar cita",
+                        "No se pudo solicitar la cita. Intente nuevamente.");
             }
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al solicitar la cita: " + e.getMessage());
-            e.printStackTrace();
+            mostrarAlerta("Error", "Error al solicitar cita", e.getMessage());
         }
     }
 
+    @FXML
     public void verMisCitas(ActionEvent actionEvent) {
-        try {
-            if (pacienteActual != null) {
-                // Obtener citas REALES del paciente
-                List<Cita> citas = clinica.getCitasPorPaciente(pacienteActual.getIdentificacion());
-
-                StringBuilder mensaje = new StringBuilder();
-                mensaje.append("=== MIS CITAS ===\n\n");
-                mensaje.append("Paciente: ").append(pacienteActual.getNombre())
-                        .append(" ").append(pacienteActual.getApellido()).append("\n\n");
-
-                if (citas.isEmpty()) {
-                    mensaje.append("No tiene citas programadas.\n");
-                } else {
-                    for (int i = 0; i < citas.size(); i++) {
-                        Cita cita = citas.get(i);
-                        mensaje.append("Cita #").append(i + 1).append(":\n")
-                                .append("  Tipo: ").append(cita.getTipo()).append("\n")
-                                .append("  Fecha: ").append(cita.getFecha()).append("\n")
-                                .append("  Hora: ").append(cita.getHora()).append("\n")
-                                .append("  Costo: $").append(String.format("%,.0f", cita.getPrecio())).append("\n\n");
-                    }
-                }
-
-                mensaje.append("Total citas: ").append(citas.size());
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Mis Citas Médicas");
-                alert.setHeaderText("Historial de Citas");
-                alert.setContentText(mensaje.toString());
-                alert.setWidth(400);
-                alert.showAndWait();
-
-            } else {
-                mostrarAlerta("Error", "No se ha cargado la información del paciente");
-            }
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar las citas: " + e.getMessage());
-        }
+        mostrarAlerta("Información", "Mis Citas",
+                "Use el menú lateral para ir a 'Mis Citas' y ver todas sus citas programadas.");
     }
 
+    @FXML
     public void limpiarFormulario(ActionEvent actionEvent) {
-        cmbEspecialidad.getSelectionModel().clearSelection();
-        cmbMedico.getSelectionModel().clearSelection();
-        cmbMedico.setItems(FXCollections.observableArrayList());
-        cmbHora.getSelectionModel().clearSelection();
-        dpFecha.setValue(LocalDate.now());
-        taMotivo.clear();
-        lblMedicoSeleccionado.setText("Médico: No seleccionado");
-        lblEspecialidadSeleccionada.setText("Especialidad: No seleccionada");
-        lblCostoConsulta.setText("$0");
-        medicoSeleccionado = null;
+        limpiarFormularioSilencioso();
+        mostrarAlerta("Información", "Formulario Limpiado",
+                "El formulario ha sido restablecido.");
     }
 
-    // ==================== MÉTODOS AUXILIARES ====================
 
-    private void actualizarDatosPaciente() {
-        if (pacienteActual != null) {
-            lblNombrePaciente.setText(pacienteActual.getNombre() + " " + pacienteActual.getApellido());
-            lblSeguroPaciente.setText(pacienteActual.getIdentificacion());
-            lblTipoSangre.setText(pacienteActual.getEmail() + " | Tel: " + pacienteActual.getTelefono());
-        }
-    }
-
-    private void actualizarMedicoSeleccionado(String medicoInfo) {
+    private void limpiarFormularioSilencioso() {
         try {
-            // Extraer el nombre del médico del texto seleccionado
-            String nombreMedico = medicoInfo.split(" - ")[0];
+            cmbMedico.getSelectionModel().clearSelection();
+            cmbHora.getSelectionModel().clearSelection();
+            taMotivo.clear();
+            dpFecha.setValue(null);
 
-            // Buscar el médico REAL en la lista de la clínica
-            for (Medico medico : clinica.getMedicos()) {
-                if (medico.getNombre().equals(nombreMedico)) {
-                    medicoSeleccionado = medico;
-                    lblMedicoSeleccionado.setText(medico.getNombre());
-
-                    // Mostrar costo REAL del médico
-                    double costo = medico.getPrecio();
-                    lblCostoConsulta.setText("$" + String.format("%,.0f", costo));
-                    break;
-                }
+            if (!listaEspecialidades.isEmpty()) {
+                cmbEspecialidad.setValue(listaEspecialidades.get(0));
             }
 
-            System.out.println("Médico seleccionado: " + (medicoSeleccionado != null ? medicoSeleccionado.getNombre() : "null"));
+            lblMedicoSeleccionado.setText("No seleccionado");
+            lblEspecialidadSeleccionada.setText("No seleccionada");
+            lblCostoConsulta.setText("$0");
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar información del médico: " + e.getMessage());
+            System.err.println("Error al limpiar formulario: " + e.getMessage());
         }
     }
 
     private boolean validarFormulario() {
         StringBuilder errores = new StringBuilder();
 
-        if (cmbEspecialidad.getValue() == null || cmbEspecialidad.getValue().isEmpty()) {
-            errores.append("• Debe seleccionar una especialidad\n");
+        if (pacienteActual == null) {
+            errores.append("• No hay paciente seleccionado\n");
         }
-
-        if (medicoSeleccionado == null) {
-            errores.append("• Debe seleccionar un médico\n");
+        if (cmbEspecialidad.getValue() == null) {
+            errores.append("• Seleccione una especialidad\n");
         }
-
+        if (cmbMedico.getValue() == null) {
+            errores.append("• Seleccione un médico\n");
+        }
         if (dpFecha.getValue() == null) {
-            errores.append("• Debe seleccionar una fecha\n");
+            errores.append("• Seleccione una fecha\n");
         }
-
-        if (cmbHora.getValue() == null || cmbHora.getValue().isEmpty()) {
-            errores.append("• Debe seleccionar una hora\n");
+        if (cmbHora.getValue() == null || cmbHora.getValue().equals("Seleccione fecha y médico")) {
+            errores.append("• Seleccione una hora\n");
         }
-
         if (taMotivo.getText() == null || taMotivo.getText().trim().isEmpty()) {
-            errores.append("• Debe ingresar el motivo de la consulta\n");
+            errores.append("• Ingrese el motivo de la consulta\n");
         }
 
         if (errores.length() > 0) {
-            mostrarAlerta("Error de Validación", "Por favor complete los siguientes campos:\n\n" + errores.toString());
+            mostrarAlerta("Error de Validación", "Complete los siguientes campos:", errores.toString());
             return false;
         }
 
         return true;
     }
 
-    private void mostrarResumenCita(Cita cita, String fecha, String hora) {
-        String mensaje = String.format(
-                "✅ CITA AGENDADA EXITOSAMENTE\n\n" +
-                        "📋 Resumen de la Cita:\n" +
-                        "─────────────────────\n" +
-                        "👤 Paciente: %s %s\n" +
-                        "🆔 Identificación: %s\n" +
-                        "👨‍⚕️ Médico: %s\n" +
-                        "🎯 Especialidad: %s\n" +
-                        "📅 Fecha: %s\n" +
-                        "⏰ Hora: %s\n" +
-                        "💰 Costo: $%,.0f\n" +
-                        "📝 Motivo: %s\n\n" +
-                        "📞 Contacto del médico: %s\n" +
-                        "✉️ Email: %s",
-                pacienteActual.getNombre(),
-                pacienteActual.getApellido(),
-                pacienteActual.getIdentificacion(),
-                medicoSeleccionado.getNombre(),
-                medicoSeleccionado.getEspecialidad(),
-                fecha,
-                hora,
-                cita.getPrecio(),
-                taMotivo.getText()
-        );
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Cita Agendada");
-        alert.setHeaderText("¡Cita médica programada con éxito!");
-        alert.setContentText(mensaje);
-        alert.setWidth(500);
-        alert.showAndWait();
-    }
-
-    private String convertirEspecialidad(String especialidad) {
-        switch (especialidad.toLowerCase()) {
-            case "general":
-                return "general";
-            case "odontología":
-                return "odontologo";
-            default:
-                return especialidad.toLowerCase();
-        }
-    }
-
-    private void mostrarAlerta(String titulo, String mensaje) {
+    private void mostrarAlerta(String titulo, String header, String contenido) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
+        alert.setHeaderText(header);
+        alert.setContentText(contenido);
         alert.showAndWait();
-    }
-
-    // Métodos públicos para configuración externa
-    public void setPacienteActual(Paciente paciente) {
-        this.pacienteActual = paciente;
-        if (paciente != null) {
-            actualizarDatosPaciente();
-        }
-    }
-
-    public Paciente getPacienteActual() {
-        return pacienteActual;
-    }
-
-    public Medico getMedicoSeleccionado() {
-        return medicoSeleccionado;
     }
 }

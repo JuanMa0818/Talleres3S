@@ -4,11 +4,12 @@ public class MedicoGeneral extends Persona implements Medico  {
 
     private String codigo;
     private String especialidad;
+    private String contraseña;
 
     public MedicoGeneral(String nombre, String apellido, String identificacion, String telefono, String email,
-                         String codigoGeneral) {
+                         String codigoGeneral, String contraseña) {
 
-        super(nombre, apellido, identificacion, telefono, email);
+        super(nombre, apellido, identificacion, telefono, email,contraseña);
         this.codigo = codigoGeneral;
         this.especialidad = "Medicina General";
     }
